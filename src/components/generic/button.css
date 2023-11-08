@@ -1,0 +1,19 @@
+button.start {
+    background-color: #baffc9;
+}
+
+button.pause {
+    background-color: #ffffba;
+}
+
+button.reset {
+    background-color: #ffb3ba;
+}
+
+button {
+    margin: 2.5px;
+    height: 55px;
+    width: 55px;
+    border-radius: 360px;
+    font-weight: bold;
+}
