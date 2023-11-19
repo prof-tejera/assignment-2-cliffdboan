@@ -1,12 +1,19 @@
 import { useState, useEffect } from "react";
 
-export function useRunTimers(timerType, minuteId, secondId, startId, pauseId, roundId) {
+export function useRunTimers({ timerType, minuteId, secondId }) {
     const [selectedMinute, setSelectedMinute] = useState(0);
     const [selectedSecond, setSelectedSecond] = useState(0);
     const [timerRunning, setTimerRunning] = useState(false);
     const [numRounds, setNumRounds] = useState(1);
     const [currentRound, setCurrentRound] = useState(1);
 
+    // set the minute and second values to the values set by the select menus
+    const minSecValues = () => {
+        setSelectedMinute(parseInt(document.getElementById(minuteId).value));
+        setSelectedSecond(parseInt(document.getElementById(secondId).value));
+    };
+
+    // functions to set the timer to running or not based on the button
     const startTimer = () => {
         if (!timerRunning) setTimerRunning(true);
     };
@@ -15,18 +22,50 @@ export function useRunTimers(timerType, minuteId, secondId, startId, pauseId, ro
         if (timerRunning) setTimerRunning(false);
     };
 
+    // reset the timer to its proper position based on the timer type
     const resetTimer = () => {
         if (timerRunning) {
             setTimerRunning(false);
         };
         if (timerType === "countdown" || timerType === "xy") {
-            setSelectedMinute(parseInt(document.getElementById(minuteId).value));
-            setSelectedSecond(parseInt(document.getElementById(secondId).value));
+            minSecValues();
         } else if (timerType === "countup") {
             setSelectedMinute(0);
             setSelectedSecond(0);
         };
         setCurrentRound(1);
+    };
+
+    // set the min and sec on the timer to its "end position"
+    const fastForwardTimer = () => {
+        setTimerRunning(false);
+        if (timerType === "countdown" || timerType === "xy") {
+            setSelectedMinute(0);
+            setSelectedSecond(0);
+            if (timerType === "xy") {
+                setCurrentRound(numRounds);
+            };
+        } else if (timerType === "countup") {
+            minSecValues();
+        }
+    };
+
+    const handleMinuteChange = (e) => {
+        const newMin = parseInt(e.target.value);
+        setSelectedMinute(newMin);
+    };
+
+    const handleSecondChange = (e) => {
+        const newSec = parseInt(e.target.value);
+        setSelectedSecond(newSec);
+    };
+
+    const handleRoundSelect = (e) => {
+        const newRoundNum = parseInt(e.target.value);
+        if (newRoundNum < currentRound) {
+            setCurrentRound(newRoundNum);
+        }
+        setNumRounds(newRoundNum);
     };
 
     useEffect(() => {
@@ -50,11 +89,10 @@ export function useRunTimers(timerType, minuteId, secondId, startId, pauseId, ro
 
         const runXyTimer = () => {
             if (currentRound < numRounds) {
-                if (selectedMinute === 0 && selectedSecond === 0) {
+                if (selectedMinute === 0 && selectedSecond === 1) {
                     intervalId = setInterval(() => {
                         setCurrentRound(currentRound + 1);
-                        setSelectedMinute(minCeiling);
-                        setSelectedSecond(secCeiling);
+                        minSecValues();
                     }, 1000);
 
                     return () => {
@@ -64,18 +102,21 @@ export function useRunTimers(timerType, minuteId, secondId, startId, pauseId, ro
             };
 
             intervalId = setInterval(() => {
-                if (selectedSecond > 0) {
+                if (selectedSecond >= 1) {
                     setSelectedSecond(selectedSecond - 1);
                 } else if (selectedMinute > 0) {
                     setSelectedMinute(selectedMinute - 1);
                     setSelectedSecond(59);
+                } else {
+                    setTimerRunning(false);
+                    clearInterval(intervalId);
                 }
             }, 1000);
         };
 
         const runCountUpTimer = () => {
             intervalId = setInterval(() => {
-                if (selectedSecond < secCeiling) {
+                if (selectedSecond < 59) {
                     setSelectedSecond(selectedSecond + 1);
                 } else if (selectedMinute < minCeiling) {
                     setSelectedMinute(selectedMinute + 1);
@@ -124,57 +165,18 @@ export function useRunTimers(timerType, minuteId, secondId, startId, pauseId, ro
 
     }, [timerRunning, selectedMinute, selectedSecond, numRounds, currentRound, minuteId, secondId, timerType]);
 
-    useEffect(() => {
-        const setMin = document.getElementById(minuteId);
-        const setSec = document.getElementById(secondId);
-        const setRnds = document.getElementById(roundId);
-        const startBtn = document.getElementById(startId);
-        const pauseBtn = document.getElementById(pauseId);
-
-        const handleMinuteChange = (e) => {
-            const newMin = parseInt(e.target.value);
-            setSelectedMinute(newMin);
-        };
-
-        const handleSecondChange = (e) => {
-            const newSec = parseInt(e.target.value);
-            setSelectedSecond(newSec);
-        };
-
-        const handleRoundSelect = (e) => {
-            const newRoundNum = parseInt(e.target.value);
-            setNumRounds(newRoundNum);
-        };
-
-        if (timerType === "countdown" || timerType === "xy") {
-            setMin.addEventListener("change", handleMinuteChange);
-            setSec.addEventListener("change", handleSecondChange);
-            if (roundId) {
-                setRnds.addEventListener("change", handleRoundSelect);
-            };
-        };
-        startBtn.addEventListener("click", startTimer);
-        pauseBtn.addEventListener("click", pauseTimer);
-
-        return () => {
-            if (timerType === "countdown" || timerType === "xy") {
-                setMin.removeEventListener("change", handleMinuteChange);
-                setSec.removeEventListener("change", handleSecondChange);
-                if (roundId) {
-                    setRnds.removeEventListener("change", handleRoundSelect);
-                }
-            };
-            startBtn.removeEventListener("click", startTimer);
-            pauseBtn.removeEventListener("click", pauseTimer);
-        }
-    });
-
     return {
+        timerRunning: timerRunning,
         startTimer,
         pauseTimer,
         resetTimer,
+        fastForwardTimer,
         selectedMinute: selectedMinute,
+        handleMinuteChange,
         selectedSecond: selectedSecond,
-        currentRound: currentRound
+        handleSecondChange,
+        currentRound: currentRound,
+        handleRoundSelect,
+        numRounds: numRounds
     };
 };

@@ -12,27 +12,31 @@ const Stopwatch = () => {
     * properly set the values in the custom hook
     * */
     const {
+        timerRunning,
         startTimer,
         pauseTimer,
         resetTimer,
+        fastForwardTimer,
         selectedMinute,
         selectedSecond,
-        // endTimer
-    } = useRunTimers("countup", "sw-min", "sw-sec", "sw-start", "sw-pause", "sw-reset");
+    } = useRunTimers({
+        timerType: "countup",
+        minuteId: "sw-min",
+        secondId: "sw-sec",
+    });
 
     return (
         <div className="stopwatch">
             <div id="clockface">
-                <span>
-                    {selectedMinute < 10 ? `0${selectedMinute}` : selectedMinute}
-                    :{selectedSecond < 10 ? `0${selectedSecond}` : selectedSecond}
+                <span style={{ color: !timerRunning ? 'red' : 'green' }}>
+                    {selectedMinute < 10 ? `0${selectedMinute}` : selectedMinute}:{selectedSecond < 10 ? `0${selectedSecond}` : selectedSecond}
                 </span>
             </div>
             <div id="button-grid">
                 <Button id="sw-start" value="Start" onClick={startTimer} />
                 <Button id="sw-pause" value="Pause" onClick={pauseTimer} />
                 <Button id="sw-reset" value="Reset" onClick={resetTimer} />
-                {/* <Button id="sw-ff" value="Finish" onClick={endTimer} /> */}
+                <Button id="sw-ff" value="FF" onClick={fastForwardTimer} />
             </div>
             <div id="set-times">
                 <SetTimes

@@ -2,18 +2,23 @@
 // calculates number of minutes when passed in seconds. Things of this nature that you don't want to copy/paste
 // everywhere.
 
-// export function startTimer(timerRunning, setTimerRunning) {
-//     if (!timerRunning) setTimerRunning(true);
-// };
+const makeId = () => {
+    var result = '';
+    var characters = 'QWERTYUIOPLKJHGFDSAZXCVBNMmnbvcxzasdfghjklpoiuytrewq1234567890';
+    var characterLength = characters.length;
+    for (var i = 0; i < 20; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characterLength));
+    }
+    return result;
+};
 
-// export function pauseTimer(timerRunning, setTimerRunning) {
-//     if (timerRunning) setTimerRunning(false);
-// };
 
-// export function resetTimer(timerRunning, setTimerRunning, setSelectedMinute, setSelectedSecond, minId, secId) {
-//     if (timerRunning) {
-//         setTimerRunning(false);
-//     };
-//     setSelectedMinute(parseInt(document.getElementById(minId).value));
-//     setSelectedSecond(parseInt(document.getElementById(secId).value));
-// };
+// const newTimer = () => {
+//     id: makeId(),
+//     timer
+// }
+
+// setTimerArray([
+//     ...timerArray,
+//     newTimer
+// ])

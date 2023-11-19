@@ -12,16 +12,25 @@ const Countdown = () => {
     * properly set the values in the custom hook
     * */
     const {
+        timerRunning,
         startTimer,
         pauseTimer,
         resetTimer,
+        fastForwardTimer,
         selectedMinute,
-        selectedSecond } = useRunTimers("countdown", "cd-min", "cd-sec", "cd-start", "cd-pause");
+        handleMinuteChange,
+        selectedSecond,
+        handleSecondChange
+    } = useRunTimers({
+        timerType: "countdown",
+        minuteId: "cd-min",
+        secondId: "cd-sec",
+    });
 
     return (
         <div className="countdown">
             <div id="clockface">
-                <span>
+                <span style={{ color: timerRunning ? 'green' : 'red' }}>
                     {selectedMinute < 10 ? `0${selectedMinute}` : selectedMinute}
                     :{selectedSecond < 10 ? `0${selectedSecond}` : selectedSecond}
                 </span>
@@ -30,9 +39,15 @@ const Countdown = () => {
                 <Button id="cd-start" value="Start" onClick={startTimer} />
                 <Button id="cd-pause" value="Pause" onClick={pauseTimer} />
                 <Button id="cd-reset" value="Reset" onClick={resetTimer} />
+                <Button id="cd-ff" value="FF" onClick={fastForwardTimer} />
             </div>
             <div id="set-times">
-                <SetTimes minId="cd-min" secId="cd-sec" />
+                <SetTimes
+                    minId="cd-min"
+                    onChangeMin={handleMinuteChange}
+                    secId="cd-sec"
+                    onChangeSec={handleSecondChange}
+                />
             </div>
         </div>
     )

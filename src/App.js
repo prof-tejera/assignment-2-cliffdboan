@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import styled from "styled-components";
 
 import DocumentationView from "./views/DocumentationView";
+import AddPage from "./views/AddPage";
 import TimersView from "./views/TimersView";
 
 const Container = styled.div`
@@ -22,6 +23,9 @@ const Nav = () => {
           <Link to="/">Timers</Link>
         </li>
         <li>
+          <Link to="/add">Add</Link>
+        </li>
+        <li>
           <Link to="/docs">Documentation</Link>
         </li>
       </ul>
@@ -36,6 +40,7 @@ const App = () => {
         <Nav />
         <Routes>
           <Route path="/docs" element={<DocumentationView />} />
+          <Route path="/add" element={<AddPage />} />
           <Route path="/" element={<TimersView />} />
         </Routes>
       </Router>

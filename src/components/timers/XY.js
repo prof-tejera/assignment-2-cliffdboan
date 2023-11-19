@@ -12,37 +12,53 @@ const XY = () => {
      * properly set the values in the custom hook
      * */
     const {
+        timerRunning,
         startTimer,
         pauseTimer,
         resetTimer,
+        fastForwardTimer,
         selectedMinute,
+        handleMinuteChange,
         selectedSecond,
-        currentRound
-         } = useRunTimers("xy", "xy-min", "xy-sec", "xy-start", "xy-pause", "xy-rnds");
+        handleSecondChange,
+        currentRound,
+        handleRoundSelect,
+        numRounds
+    } = useRunTimers({
+        timerType: "xy",
+        minuteId: "xy-min",
+        secondId: "xy-sec",
+    });
 
     return (
         <div className="countdown">
             <div id="clockface">
-                <span>
+                <span style={{ color: !timerRunning ? 'red' : 'green' }}>
                     {selectedMinute < 10 ? `0${selectedMinute}` : selectedMinute}
                     :{selectedSecond < 10 ? `0${selectedSecond}` : selectedSecond}
                 </span>
                 <br />
                 <span>
-                    Round: {currentRound}
+                    Round: {currentRound} of {numRounds}
                 </span>
             </div>
             <div id="button-grid">
                 <Button id="xy-start" value="Start" onClick={startTimer} />
                 <Button id="xy-pause" value="Pause" onClick={pauseTimer} />
                 <Button id="xy-reset" value="Reset" onClick={resetTimer} />
+                <Button id="xy-ff" value="FF" onClick={fastForwardTimer} />
             </div>
             <div id="set-times">
-                <SetTimes minId="xy-min" secId="xy-sec" />
+                <SetTimes
+                minId="xy-min"
+                onChangeMin={handleMinuteChange}
+                secId="xy-sec"
+                onChangeSec={handleSecondChange}
+                />
             </div>
             <div>
                 <label htmlFor="rnds"># Rounds: </label>
-                <select name="rnds" id="xy-rnds">
+                <select name="rnds" id="xy-rnds" onChange={handleRoundSelect}>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>

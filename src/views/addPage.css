@@ -1,6 +1,5 @@
 #clockface {
     border: 1.5px inset black;
-    color: black;
     padding: 2px;
     width: 200px;
     height: 60px;
@@ -11,4 +10,8 @@
     display: flex;
     justify-content: center;
     padding: 3px;
+}
+
+label {
+    font-size: 20px;
 }
