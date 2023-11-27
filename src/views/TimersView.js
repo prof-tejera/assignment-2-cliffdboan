@@ -1,4 +1,6 @@
+import React from "react";
 import styled from "styled-components";
+import { useTimerContext } from "../utils/timerProvider";
 
 const TimersContainer = styled.div`
   display: flex;
@@ -10,11 +12,21 @@ const TimersContainer = styled.div`
 
 
 const TimersView = () => {
+    const { timerQueue, removeTimer } = useTimerContext();
 
     return (
         <TimersContainer>
             <h2>Timer Queue</h2>
+            <div>
+                {timerQueue.map((timer) => (
+                    <div key={timer.id}>
+                        {timer.title}
+                        {timer.C}
+                    </div>
 
+                ))}
+            </div>
+            <button onClick={removeTimer}>Remove Last Timer</button>
         </TimersContainer>
     );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useId } from "react";
 import Button from "../generic/Button";
 import SetTimes from "../generic/SetTimes";
 
@@ -11,6 +11,8 @@ const Tabata = () => {
     const [restTime, setRestTime] = useState(0);
     const [currentTime, setCurrentTime] = useState(workTime);
     const [isRestPhase, setIsRestPhase] = useState(false);
+
+    const uniqueId = useId();
 
     const startTimer = () => {
         if (!timerRunning) {
@@ -40,8 +42,6 @@ const Tabata = () => {
         const newWork = (parseInt(e.target.value));
         setWorkTime(newWork);
         setCurrentTime(newWork);
-        console.log("changed");
-        console.log(currentTime);
     };
 
     const handleRestSelect = (e) => {
@@ -89,8 +89,8 @@ const Tabata = () => {
     }, [timerRunning, rounds, currentTime, workTime, restTime, isRestPhase]);
 
     return (
-        <div className="countdown">
-            <div id="clockface">
+        <div id={uniqueId} className="countdown">
+            <div className="clockface">
                 <span style={{ color: timerRunning ? (isRestPhase ? '#9B7EC9' : 'green') : 'red' }}>
                     {currentTime < 10 ? `0${currentTime}` : currentTime}
                 </span>
@@ -104,10 +104,10 @@ const Tabata = () => {
                 <Button id="tab-ff" value="FF" onClick={fastForwardTimer} />
             </div>
             <div id="set-times">
-                <SetTimes secId="work-sec" hideMins={true} work={true} onChangeSec={handleWorkSelect} />
-                <SetTimes secId="rest-sec" hideMins={true} rest={true} onChangeSec={handleRestSelect} />
+                <SetTimes secId={uniqueId + "-work-sec"} hideMins={true} work={true} onChangeSec={handleWorkSelect} />
+                <SetTimes secId={uniqueId + "-rest-sec"} hideMins={true} rest={true} onChangeSec={handleRestSelect} />
                 <label htmlFor="rounds"># Rounds: </label>
-                <select name="rounds" id="rounds" onChange={handleRoundSelect}>
+                <select name="rounds" id={uniqueId + "-rounds"} onChange={handleRoundSelect}>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>

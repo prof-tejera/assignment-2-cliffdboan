@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import './addPage.css'
 import Button from "../components/generic/Button";
@@ -7,7 +7,7 @@ import Stopwatch from "../components/timers/Stopwatch";
 import Countdown from "../components/timers/Countdown";
 import XY from "../components/timers/XY";
 import Tabata from "../components/timers/Tabata";
-import { useTimerContext } from "../utils/timerProvider";
+import TimerProvider, { TimerContext } from "../utils/timerProvider";
 
 const Timers = styled.div`
   display: flex;
@@ -47,6 +47,7 @@ const TimerTitle = styled.div`
 `;
 
 const AddPage = () => {
+  const { addTimer } = useContext(TimerContext);
 
   const timers = [
     { title: "Stopwatch", C: <Stopwatch /> },
@@ -56,22 +57,24 @@ const AddPage = () => {
   ];
 
   return (
-    <Timers>
-      {timers.map((timer) => (
-        <>
-          <TimerContainer key={`timer-${timer.title}`}>
-            <Timer>
-              <TimerTitle>{timer.title}</TimerTitle>
-              {timer.C}
-            </Timer>
-            <Button
-              id={"addTimerBtn"}
-              value={"Add Timer"}
-              onClick={null}/>
-          </TimerContainer>
-        </>
-      ))}
-    </Timers>
+    <TimerProvider>
+      <Timers>
+        {timers.map((timer) => (
+          <>
+            <TimerContainer key={`timer-${timer.title}`}>
+              <Timer>
+                <TimerTitle>{timer.title}</TimerTitle>
+                {timer.C}
+              </Timer>
+              <Button
+                id={"addTimerBtn"}
+                value={"Add Timer"}
+                onClick={() => addTimer(timer.C, timer.title)} />
+            </TimerContainer>
+          </>
+        ))}
+      </Timers>
+    </TimerProvider>
   );
 };
 

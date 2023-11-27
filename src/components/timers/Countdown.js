@@ -1,8 +1,13 @@
 import Button from "../generic/Button.js"
 import SetTimes from "../generic/SetTimes.js";
 import { useRunTimers } from "../../utils/mainHook.js";
+import { useId } from "react";
+
 
 const Countdown = () => {
+    // generate a unique id
+    const uniqueId = useId();
+
     /**
     * extract the returned functions and stated values from the custom hook this way
     * the functions can be called within the onClick prop and the state values can be
@@ -23,13 +28,15 @@ const Countdown = () => {
         handleSecondChange
     } = useRunTimers({
         timerType: "countdown",
-        minuteId: "cd-min",
-        secondId: "cd-sec",
+        minuteId: `${uniqueId}-cd-min`,
+        secondId: `${uniqueId}-cd-sec`,
     });
 
+    // return the countdown timer. if the timer is running, the numbers are green,
+    // otherwise, they stay red while not running.
     return (
-        <div className="countdown">
-            <div id="clockface">
+        <div id={uniqueId} className="countdown">
+            <div className="clockface">
                 <span style={{ color: timerRunning ? 'green' : 'red' }}>
                     {selectedMinute < 10 ? `0${selectedMinute}` : selectedMinute}
                     :{selectedSecond < 10 ? `0${selectedSecond}` : selectedSecond}
@@ -43,9 +50,9 @@ const Countdown = () => {
             </div>
             <div id="set-times">
                 <SetTimes
-                    minId="cd-min"
+                    minId={uniqueId + "-cd-min"}
                     onChangeMin={handleMinuteChange}
-                    secId="cd-sec"
+                    secId={uniqueId + "-cd-sec"}
                     onChangeSec={handleSecondChange}
                 />
             </div>

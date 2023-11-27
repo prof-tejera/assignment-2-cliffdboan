@@ -5,6 +5,7 @@ import styled from "styled-components";
 import DocumentationView from "./views/DocumentationView";
 import AddPage from "./views/AddPage";
 import TimersView from "./views/TimersView";
+import TimerProvider from "./utils/timerProvider";
 
 const Container = styled.div`
   background: #dbdcda;
@@ -37,12 +38,14 @@ const App = () => {
   return (
     <Container>
       <Router>
-        <Nav />
-        <Routes>
-          <Route path="/docs" element={<DocumentationView />} />
-          <Route path="/add" element={<AddPage />} />
-          <Route path="/" element={<TimersView />} />
-        </Routes>
+          <Nav />
+        <TimerProvider>
+          <Routes>
+            <Route path="/docs" element={<DocumentationView />} />
+            <Route path="/add" element={<AddPage />} />
+            <Route path="/" element={<TimersView />} />
+          </Routes>
+        </TimerProvider>
       </Router>
     </Container>
   );

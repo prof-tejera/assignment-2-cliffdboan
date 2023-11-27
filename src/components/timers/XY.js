@@ -1,8 +1,10 @@
 import Button from "../generic/Button";
 import SetTimes from "../generic/SetTimes";
 import { useRunTimers } from "../../utils/mainHook.js";
+import { useId } from "react";
 
 const XY = () => {
+    const uniqueId = useId();
     /**
      * extract the returned functions and stated values from the custom hook this way
      * the functions can be called within the onClick prop and the state values can be
@@ -26,13 +28,13 @@ const XY = () => {
         numRounds
     } = useRunTimers({
         timerType: "xy",
-        minuteId: "xy-min",
-        secondId: "xy-sec",
+        minuteId: `${uniqueId}-xy-min`,
+        secondId: `${uniqueId}-xy-sec`,
     });
 
     return (
-        <div className="countdown">
-            <div id="clockface">
+        <div id={uniqueId} className="countdown">
+            <div className="clockface">
                 <span style={{ color: !timerRunning ? 'red' : 'green' }}>
                     {selectedMinute < 10 ? `0${selectedMinute}` : selectedMinute}
                     :{selectedSecond < 10 ? `0${selectedSecond}` : selectedSecond}
@@ -50,15 +52,15 @@ const XY = () => {
             </div>
             <div id="set-times">
                 <SetTimes
-                minId="xy-min"
+                minId={uniqueId + "-xy-min"}
                 onChangeMin={handleMinuteChange}
-                secId="xy-sec"
+                secId={uniqueId + "-xy-sec"}
                 onChangeSec={handleSecondChange}
                 />
             </div>
             <div>
                 <label htmlFor="rnds"># Rounds: </label>
-                <select name="rnds" id="xy-rnds" onChange={handleRoundSelect}>
+                <select name="rnds" id={uniqueId + "-xy-rnds"} onChange={handleRoundSelect}>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>

@@ -2,7 +2,7 @@
 // calculates number of minutes when passed in seconds. Things of this nature that you don't want to copy/paste
 // everywhere.
 
-const makeId = () => {
+export const makeId = () => {
     var result = '';
     var characters = 'QWERTYUIOPLKJHGFDSAZXCVBNMmnbvcxzasdfghjklpoiuytrewq1234567890';
     var characterLength = characters.length;
@@ -11,14 +11,3 @@ const makeId = () => {
     }
     return result;
 };
-
-
-// const newTimer = () => {
-//     id: makeId(),
-//     timer
-// }
-
-// setTimerArray([
-//     ...timerArray,
-//     newTimer
-// ])
