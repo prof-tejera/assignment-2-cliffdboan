@@ -1,25 +1,22 @@
 import React from "react";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useId } from "react";
 import { makeId } from "./helpers"
+// import { useRunTimers } from "./mainHook";
 
 export const TimerContext = React.createContext({});
-
-export const useTimerContext = () => {
-    return useContext(TimerContext);
-};
 
 export const TimerProvider = ({ children }) => {
     const [timerQueue, setTimerQueue] = useState([]);
 
-    const addTimer = (timerComponent, title, minVal, secVal) => {
+    const addTimer = (timerComponent, title) => {
+        const newTimerId = makeId();
+
         setTimerQueue((prevQueue) => [
             ...prevQueue,
             {
-                id: makeId(),
+                id: newTimerId,
                 C: timerComponent,
                 title: title,
-                min: minVal,
-                sec: secVal
             }
         ]);
     };
@@ -33,7 +30,7 @@ export const TimerProvider = ({ children }) => {
             value={{
                 addTimer,
                 removeTimer,
-                timerQueue
+                timerQueue,
             }}
         >
             {children}

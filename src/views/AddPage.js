@@ -7,7 +7,7 @@ import Stopwatch from "../components/timers/Stopwatch";
 import Countdown from "../components/timers/Countdown";
 import XY from "../components/timers/XY";
 import Tabata from "../components/timers/Tabata";
-import TimerProvider, { TimerContext } from "../utils/timerProvider";
+import { TimerContext } from "../utils/timerProvider";
 
 const Timers = styled.div`
   display: flex;
@@ -57,7 +57,6 @@ const AddPage = () => {
   ];
 
   return (
-    <TimerProvider>
       <Timers>
         {timers.map((timer) => (
           <>
@@ -74,7 +73,6 @@ const AddPage = () => {
           </>
         ))}
       </Timers>
-    </TimerProvider>
   );
 };
 
