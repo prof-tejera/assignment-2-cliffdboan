@@ -1,0 +1,29 @@
+button.start {
+    background-color: #baffc9;
+}
+
+button.pause {
+    background-color: #ffffba;
+}
+
+button.reset {
+    background-color: #ffb3ba;
+}
+
+button.add {
+    font-weight: bolder;
+    background-color: #F9C869;
+}
+
+button {
+    margin: 2.5px;
+    height: 50px;
+    width: 50px;
+    border-radius: 360px;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+button:hover {
+    cursor: pointer;
+}
