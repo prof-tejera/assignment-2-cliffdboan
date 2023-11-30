@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 
-export function useRunTimers({ timerType, minuteId, secondId }) {
-    const [selectedMinute, setSelectedMinute] = useState(0);
-    const [selectedSecond, setSelectedSecond] = useState(0);
+export function useRunTimers({ timerType, initialMinutes, initialSeconds, initialNumRounds, initialRound }) {
+    /**
+     * set the values of minutes, seconds, and rounds with the timer 'off'
+     * if the timer has an initial value (like when in its array), use that value as 'initial,'
+     * otherwise, set the timer to 00:00. If the timer counts up from 0, begin it at 00:00 rather than the initial values
+     */
+    const [selectedMinute, setSelectedMinute] = useState(timerType === 'stopwatch' ? 0 : initialMinutes || 0);
+    const [selectedSecond, setSelectedSecond] = useState(timerType === 'stopwatch' ? 0 : initialSeconds || 0);
     const [timerRunning, setTimerRunning] = useState(false);
-    const [numRounds, setNumRounds] = useState(1);
-    const [currentRound, setCurrentRound] = useState(1);
-
-    // set the minute and second values to the values set by the select menus
-    const minSecValues = () => {
-        setSelectedMinute(parseInt(document.getElementById(minuteId).value));
-        setSelectedSecond(parseInt(document.getElementById(secondId).value));
-    };
+    const [numRounds, setNumRounds] = useState(initialNumRounds || 1);
+    const [currentRound, setCurrentRound] = useState(initialRound || 1);
 
     // functions to set the timer to running or not based on the button
     const startTimer = () => {
@@ -28,8 +27,9 @@ export function useRunTimers({ timerType, minuteId, secondId }) {
             setTimerRunning(false);
         };
         if (timerType === "countdown" || timerType === "xy") {
-            minSecValues();
-        } else if (timerType === "countup") {
+            setSelectedMinute(initialMinutes);
+            setSelectedSecond(initialSeconds);
+        } else if (timerType === "stopwatch") {
             setSelectedMinute(0);
             setSelectedSecond(0);
         };
@@ -45,8 +45,9 @@ export function useRunTimers({ timerType, minuteId, secondId }) {
             if (timerType === "xy") {
                 setCurrentRound(numRounds);
             };
-        } else if (timerType === "countup") {
-            minSecValues();
+        } else if (timerType === "stopwatch") {
+            setSelectedMinute(initialMinutes);
+            setSelectedSecond(initialSeconds);
         }
     };
 
@@ -70,8 +71,6 @@ export function useRunTimers({ timerType, minuteId, secondId }) {
 
     useEffect(() => {
         let intervalId;
-        const minCeiling = parseInt(document.getElementById(minuteId).value);
-        const secCeiling = parseInt(document.getElementById(secondId).value);
 
         const runCountdownTimer = () => {
             intervalId = setInterval(() => {
@@ -92,7 +91,8 @@ export function useRunTimers({ timerType, minuteId, secondId }) {
                 if (selectedMinute === 0 && selectedSecond === 1) {
                     intervalId = setInterval(() => {
                         setCurrentRound(currentRound + 1);
-                        minSecValues();
+                        setSelectedMinute(initialMinutes);
+                        setSelectedSecond(initialSeconds);
                     }, 1000);
 
                     return () => {
@@ -118,7 +118,7 @@ export function useRunTimers({ timerType, minuteId, secondId }) {
             intervalId = setInterval(() => {
                 if (selectedSecond < 59) {
                     setSelectedSecond(selectedSecond + 1);
-                } else if (selectedMinute < minCeiling) {
+                } else if (selectedMinute < initialMinutes) {
                     setSelectedMinute(selectedMinute + 1);
                     setSelectedSecond(0);
                 } else {
@@ -139,8 +139,8 @@ export function useRunTimers({ timerType, minuteId, secondId }) {
             return () => {
                 clearInterval(intervalId);
             };
-        } else if (timerType === "countup") {
-            if (timerRunning && (selectedMinute < minCeiling || selectedSecond < secCeiling)) {
+        } else if (timerType === "stopwatch") {
+            if (timerRunning && (selectedMinute < initialMinutes || selectedSecond < initialSeconds)) {
                 runCountUpTimer();
             } else {
                 setTimerRunning(false);
@@ -163,7 +163,7 @@ export function useRunTimers({ timerType, minuteId, secondId }) {
             };
         };
 
-    }, [timerRunning, selectedMinute, selectedSecond, numRounds, currentRound, minuteId, secondId, timerType]);
+    }, [timerRunning, selectedMinute, selectedSecond, numRounds, currentRound, initialMinutes, initialSeconds, timerType]);
 
     return {
         timerRunning: timerRunning,

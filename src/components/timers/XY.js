@@ -1,9 +1,16 @@
 import Button from "../generic/Button";
 import SetTimes from "../generic/SetTimes";
-import { useRunTimers } from "../../utils/mainHook.js";
-import { useId } from "react";
+import { useRunTimers } from "../../utils/useRunTimers.js";
+import { useContext, useId } from "react";
+import { TimerContext } from "../../utils/timerProvider";
+import { useLocation } from "react-router-dom";
 
-const XY = () => {
+const XY = ({ initialMinutes, initialSeconds, initialNumRounds, initialRound }) => {
+
+    const location = useLocation();
+    const loadIfAdd = location.pathname.includes("add");
+
+    const { addTimer } = useContext(TimerContext);
     const uniqueId = useId();
     /**
      * extract the returned functions and stated values from the custom hook this way
@@ -28,8 +35,10 @@ const XY = () => {
         numRounds
     } = useRunTimers({
         timerType: "xy",
-        minuteId: `${uniqueId}-xy-min`,
-        secondId: `${uniqueId}-xy-sec`,
+        initialMinutes,
+        initialSeconds,
+        initialNumRounds,
+        initialRound
     });
 
     return (
@@ -50,15 +59,13 @@ const XY = () => {
                 <Button id="xy-reset" value="Reset" onClick={resetTimer} />
                 <Button id="xy-ff" value="FF" onClick={fastForwardTimer} />
             </div>
-            <div id="set-times">
+            <div id="set-times" style={{ display: loadIfAdd ? '' : 'none' }}>
                 <SetTimes
-                minId={uniqueId + "-xy-min"}
                 onChangeMin={handleMinuteChange}
-                secId={uniqueId + "-xy-sec"}
                 onChangeSec={handleSecondChange}
                 />
             </div>
-            <div>
+            <div style={{ display: loadIfAdd ? '' : 'none' }}>
                 <label htmlFor="rnds"># Rounds: </label>
                 <select name="rnds" id={uniqueId + "-xy-rnds"} onChange={handleRoundSelect}>
                     <option value={1}>1</option>
@@ -72,6 +79,19 @@ const XY = () => {
                     <option value={9}>9</option>
                     <option value={10}>10</option>
                 </select>
+            </div>
+            <div style={{ display: loadIfAdd ? '' : 'none' }}>
+                <Button
+                    id={"addTimerBtn"}
+                    value={"Add Timer"}
+                    onClick={() => {
+                        addTimer(<XY
+                             initialMinutes={selectedMinute}
+                             initialSeconds={selectedSecond}
+                             initialNumRounds={numRounds}
+                             initialRound={currentRound}
+                             />, "XY")
+                    }} />
             </div>
         </div>
     )

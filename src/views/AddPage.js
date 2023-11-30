@@ -1,13 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components";
 import './addPage.css'
-import Button from "../components/generic/Button";
 
 import Stopwatch from "../components/timers/Stopwatch";
 import Countdown from "../components/timers/Countdown";
 import XY from "../components/timers/XY";
 import Tabata from "../components/timers/Tabata";
-import { TimerContext } from "../utils/timerProvider";
 
 const Timers = styled.div`
   display: flex;
@@ -47,8 +45,6 @@ const TimerTitle = styled.div`
 `;
 
 const AddPage = () => {
-  const { addTimer } = useContext(TimerContext);
-
   const timers = [
     { title: "Stopwatch", C: <Stopwatch /> },
     { title: "Countdown", C: <Countdown /> },
@@ -65,10 +61,6 @@ const AddPage = () => {
                 <TimerTitle>{timer.title}</TimerTitle>
                 {timer.C}
               </Timer>
-              <Button
-                id={"addTimerBtn"}
-                value={"Add Timer"}
-                onClick={() => addTimer(timer.C, timer.title)} />
             </TimerContainer>
           </>
         ))}

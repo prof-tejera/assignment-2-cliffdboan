@@ -1,16 +1,22 @@
-import { useEffect, useState, useId } from "react";
+import { useEffect, useState, useId, useContext } from "react";
 import Button from "../generic/Button";
 import SetTimes from "../generic/SetTimes";
+import { TimerContext } from "../../utils/timerProvider";
+import { useLocation } from "react-router-dom";
 
-
-const Tabata = () => {
+const Tabata = ({ initialWork, initialRest, initialNumRounds }) => {
     const [timerRunning, setTimerRunning] = useState(false);
-    const [rounds, setRounds] = useState(1);
+    const [rounds, setRounds] = useState(initialNumRounds || 1);
     const [numRounds, setNumRounds] = useState(1)
-    const [workTime, setWorkTime] = useState(0);
-    const [restTime, setRestTime] = useState(0);
+    const [workTime, setWorkTime] = useState(initialWork || 0);
+    const [restTime, setRestTime] = useState(initialRest || 0);
     const [currentTime, setCurrentTime] = useState(workTime);
     const [isRestPhase, setIsRestPhase] = useState(false);
+
+    const location = useLocation();
+    const loadIfAdd = location.pathname.includes("add");
+
+    const { addTimer } = useContext(TimerContext);
 
     const uniqueId = useId();
 
@@ -29,7 +35,8 @@ const Tabata = () => {
     const resetTimer = () => {
         setTimerRunning(false);
         setCurrentTime(workTime);
-        setRounds(numRounds);
+        setIsRestPhase(false);
+        setRounds(initialNumRounds || numRounds);
     };
 
     const fastForwardTimer = () => {
@@ -103,7 +110,7 @@ const Tabata = () => {
                 <Button id="tab-reset" value="Reset" onClick={resetTimer} />
                 <Button id="tab-ff" value="FF" onClick={fastForwardTimer} />
             </div>
-            <div id="set-times">
+            <div id="set-times" style={{ display: loadIfAdd ? '' : 'none' }}>
                 <SetTimes secId={uniqueId + "-work-sec"} hideMins={true} work={true} onChangeSec={handleWorkSelect} />
                 <SetTimes secId={uniqueId + "-rest-sec"} hideMins={true} rest={true} onChangeSec={handleRestSelect} />
                 <label htmlFor="rounds"># Rounds: </label>
@@ -119,6 +126,14 @@ const Tabata = () => {
                     <option value={9}>9</option>
                     <option value={10}>10</option>
                 </select>
+            </div>
+            <div style={{ display: loadIfAdd ? '' : 'none' }}>
+                <Button
+                    id={"addTimerBtn"}
+                    value={"Add Timer"}
+                    onClick={() => {
+                        addTimer(<Tabata initialWork={workTime} initialRest={restTime} initialNumRounds={numRounds} />, "Tabata")
+                    }} />
             </div>
         </div>
     )

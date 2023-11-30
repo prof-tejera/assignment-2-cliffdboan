@@ -1,9 +1,16 @@
 import Button from "../generic/Button";
 import SetTimes from "../generic/SetTimes";
-import { useRunTimers } from "../../utils/mainHook.js";
-import { useId } from "react";
+import { useRunTimers } from "../../utils/useRunTimers.js";
+import { useContext, useId } from "react";
+import { TimerContext } from "../../utils/timerProvider";
+import { useLocation } from "react-router-dom";
 
-const Stopwatch = () => {
+const Stopwatch = ({ initialMinutes, initialSeconds }) => {
+
+    const location = useLocation();
+    const loadIfAdd = location.pathname.includes("add");
+
+    const { addTimer } = useContext(TimerContext);
     const uniqueId = useId();
     /**
     * extract the returned functions and stated values from the custom hook this way
@@ -22,9 +29,9 @@ const Stopwatch = () => {
         selectedMinute,
         selectedSecond,
     } = useRunTimers({
-        timerType: "countup",
-        minuteId: `${uniqueId}-sw-min`,
-        secondId: `${uniqueId}-sw-sec`,
+        timerType: "stopwatch",
+        initialMinutes,
+        initialSeconds
     });
 
     return (
@@ -40,14 +47,25 @@ const Stopwatch = () => {
                 <Button id="sw-reset" value="Reset" onClick={resetTimer} />
                 <Button id="sw-ff" value="FF" onClick={fastForwardTimer} />
             </div>
-            <div id="set-times">
+            <div id="set-times" style={{ display: loadIfAdd ? '' : 'none' }}>
                 <SetTimes
                     minId={uniqueId + "-sw-min"}
                     secId={uniqueId + "-sw-sec"}
                 />
             </div>
+            <div style={{display: loadIfAdd ? '' : 'none'}}>
+                <Button
+                    id={"addTimerBtn"}
+                    value={"Add Timer"}
+                    onClick={() => {
+                        // get the value from the select box,
+                        // then set the initial values of the timers 'end state'
+                        let min = parseInt(document.getElementById(uniqueId + "-sw-min").value);
+                        let sec = parseInt(document.getElementById(uniqueId + "-sw-sec").value);
+                        addTimer(<Stopwatch initialMinutes={min} initialSeconds={sec} />, "Stopwatch")
+                    }} />
+            </div>
         </div>
-
     );
 };
 
